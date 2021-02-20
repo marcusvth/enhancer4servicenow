@@ -13,11 +13,11 @@
   "content_scripts": [
     {
       "matches": ["https://*.service-now.com/now/workspace/agent/*"],
-      "js": ["./js/jquery-3.5.1.js", "./js/chat.js"]
+      "js": ["./js/jquery-3.5.1.min.js", "./js/chat.js"]
     },
     {
       "matches":["https://*.service-now.com/*"],
-      "js": ["./js/jquery-3.5.1.js", "./js/kb.js"] 
+      "js": ["./js/jquery-3.5.1.min.js", "./js/kb.js"] 
     } 
   ]
 }

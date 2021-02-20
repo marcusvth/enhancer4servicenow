@@ -4,7 +4,6 @@ var audio = new Audio(audioUrl);
 
 setInterval(checkForActiveChats, 2000);
 setInterval(checkInbox, 500);
-setInterval(checkForInactivityBox, 5000);
 
 function checkInbox(){
     var inbox = document.querySelector('sn-inbox').shadowRoot;
@@ -22,8 +21,7 @@ function checkInbox(){
         var nowButtons = card.shadowRoot.querySelectorAll('now-button');
         console.log(`${nowButtons.length} button elements detected. Performing action.`);
         nowButtons.forEach(nowButton => {
-            var isAcceptButton = nowButton.shadowRoot.textContent.toLowerCase().includes('accept');
-            if (!isAcceptButton) return;
+            if (!isAcceptButton(nowButton)) return;
             var acceptButton = nowButton.shadowRoot.querySelector('button');
             console.log(`Accept button found: ${acceptButton}.`);
             acceptButton.click();
@@ -40,6 +38,13 @@ function checkForActiveChats() {
     var chatElements = document.querySelector('sn-workspace-content')?.shadowRoot.querySelectorAll('div[id^=chrome] > sn-interaction-custom-renderer');
     if (chatElements)
         chatElements.forEach(appendCopyButton);
+}
+
+function isAcceptButton(nowButton) {
+    var hasAcceptText = nowButton.shadowRoot.textContent.toLowerCase().includes('accept');
+    var isAcceptClass = nowButton.shadowRoot.querySelector('button').className == 'now-button -secondary -positive -sm';
+
+    return hasAcceptText || isAcceptClass;
 }
 
 // Get the user data inside of the fields of the chatbox.
