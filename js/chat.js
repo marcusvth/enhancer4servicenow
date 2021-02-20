@@ -1,34 +1,43 @@
 var lastChatAccepted = null;
+var audioUrl = chrome.runtime.getURL('ring.mp3');
+var audio = new Audio(audioUrl);
 
 setInterval(checkForActiveChats, 2000);
 setInterval(checkInbox, 500);
+setInterval(checkForInactivityBox, 5000);
 
 function checkInbox(){
-    var inbox = $('sn-inbox')[0]?.shadowRoot;
-    var chatBoxes = $(inbox).find('sn-inbox-card');
+    var inbox = document.querySelector('sn-inbox').shadowRoot;
+    var inboxCards = inbox.querySelectorAll('sn-inbox-card');
 
-    if (!chatBoxes.length)
-        console.log('%cNo chats...', 'color: teal;');
-        
-    chatBoxes.each((index, chatBox) => {
-        var acceptButton = navigateShadowDOM($(chatBox)[0], 'now-button', 'button');
-        var currentChatId = navigateShadowDOM($(chatBox)[0], 'div.sn-card-header')?.textContent
-        
-        if (lastChatAccepted == currentChatId)
-            return;
-
-        if (acceptButton){
-            lastChatAccepted = currentChatId
+    if (!inboxCards.length)
+        console.log('%cNo inbox cards found...', 'color: purple;');
+    
+        inboxCards.forEach(card => {
+        audio.play();
+        var currentChatId = card.shadowRoot.querySelector('div.sn-card-header').textContent;
+        console.log(`${currentChatId} detected!`);
+        if (lastChatAccepted == currentChatId) return;
+        console.log(`Checking for buttons...`);
+        var nowButtons = card.shadowRoot.querySelectorAll('now-button');
+        console.log(`${nowButtons.length} button elements detected. Performing action.`);
+        nowButtons.forEach(nowButton => {
+            var isAcceptButton = nowButton.shadowRoot.textContent.toLowerCase().includes('accept');
+            if (!isAcceptButton) return;
+            var acceptButton = nowButton.shadowRoot.querySelector('button');
+            console.log(`Accept button found: ${acceptButton}.`);
             acceptButton.click();
-            console.log(`%c${lastChatAccepted} accepted.`, 'color: green;')
-        } 
+            console.log('Click event triggered.');     
+            lastChatAccepted = currentChatId;
+            console.log(`%c${lastChatAccepted} accepted.`, 'color: green;');
+        });
     })
 }
     
 // Check for active chats every x seconds.
 
 function checkForActiveChats() {   
-    var chatElements = document.querySelector('sn-workspace-content')?.shadowRoot.querySelectorAll('div[id^=chrome] > now-record-form-connected');
+    var chatElements = document.querySelector('sn-workspace-content')?.shadowRoot.querySelectorAll('div[id^=chrome] > sn-interaction-custom-renderer');
     if (chatElements)
         chatElements.forEach(appendCopyButton);
 }
@@ -57,13 +66,13 @@ function getSnowUserData(chatBox) {
 
 function appendCopyButton(chatElement){  
    
-    var chatBox =  navigateShadowDOM(chatElement, 'sn-form-internal-client-scripting-environment','sn-form-internal-workspace-form-layout', 'sn-form-internal-header-layout', 'sn-component-ribbon-container', 'sn-component-workspace-customer360');
+    var chatBox =  navigateShadowDOM(chatElement,'now-record-form-connected', 'sn-form-internal-workspace-form-layout', 'sn-form-internal-header-layout', 'sn-component-ribbon-container', 'sn-component-workspace-customer360');
     var header = navigateShadowDOM(chatBox, 'div.sn-widget-header');
 
     if (!header) return;   
     var button = $(header).find('#copyBtn')[0] ?? getCopyButton()[0];
     button.onclick = () => { 
-        copyToClipboard(getSnowUserData(chatBox))
+        copyToClipboard(getSnowUserData(chatBox));
     }; 
     header.append(button);
 }
