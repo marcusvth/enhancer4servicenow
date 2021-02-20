@@ -1,6 +1,6 @@
 # Enhancer For ServiceNow
 
-Enhancer For ServiceNow is a browser extension that improves your Agent Workspace, adding features that will reduce your AHT. The extension also helps you when reading Knowledge Articles, formatting them for better readability.
+Enhancer For ServiceNow is a browser extension, developed for Unilever Service Desk Agents, that improves your Agent Workspace, adding features that will reduce your AHT. The extension also helps you when reading Knowledge Articles, formatting them for better readability.
 
 ## Features
 
