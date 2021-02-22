@@ -42,7 +42,7 @@ function checkForActiveChats() {
 
 function isAcceptButton(nowButton) {
     var hasAcceptText = nowButton.shadowRoot.textContent.toLowerCase().includes('accept');
-    var isAcceptClass = nowButton.shadowRoot.querySelector('button').className == 'now-button -secondary -positive -sm';
+    var isAcceptClass = nowButton.shadowRoot?.querySelector('button')?.className == 'now-button -secondary -positive -sm';
 
     return hasAcceptText || isAcceptClass;
 }
